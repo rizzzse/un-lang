@@ -7,4 +7,5 @@ pub enum Lit {
 pub enum Expr {
     Lit(Lit),
     If(Box<Self>, Box<Self>, Box<Self>),
+    While(Box<Self>, Box<Self>),
 }

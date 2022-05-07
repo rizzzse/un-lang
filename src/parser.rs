@@ -22,7 +22,14 @@ pub fn expr() -> impl Parser<char, Expr, Error = Simple<char>> {
             .then(expr.clone().map(Box::new))
             .map(|((test, then), r#else)| Expr::If(test, then, r#else));
 
-        choice((if_expr, atom))
+        // while <expr> do <expr>
+        let while_expr = text::keyword("while")
+            .ignore_then(expr.clone().map(Box::new))
+            .then_ignore(text::keyword("do"))
+            .then(expr.clone().map(Box::new))
+            .map(|(test, body)| Expr::While(test, body));
+
+        choice((if_expr, while_expr, atom))
     })
 }
 
@@ -43,6 +50,14 @@ mod tests {
                 Box::new(int_lit("1")),
                 Box::new(int_lit("2")),
             ))
+        );
+    }
+
+    #[test]
+    fn while_expr() {
+        assert_eq!(
+            expr().parse("while(0)do(1)"),
+            Ok(Expr::While(Box::new(int_lit("0")), Box::new(int_lit("1"))))
         );
     }
 }
