@@ -7,5 +7,5 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     let code = args[1..].join(" ");
     println!("input: \"{}\"", code);
-    println!("ast: {:?}", parser::expr().parse(code));
+    println!("ast: {:?}", parser::stat().parse(code));
 }
